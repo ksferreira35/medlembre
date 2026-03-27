@@ -1,0 +1,35 @@
+# Maven
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+ 
+# Compilados Java
+*.class
+*.jar
+*.war
+*.ear
+ 
+# Dados gerados em runtime
+medicamentos.json
+ 
+# IDEs
+.vscode/
+.idea/
+*.iml
+*.iws
+*.ipr
+.classpath
+.project
+.settings/
+ 
+# Sistema
+.DS_Store
+Thumbs.db
+*~
+ 
+# Logs
+*.log
+ 
