@@ -1,4 +1,4 @@
-package br.com.kaiky.service;
+package br.com.kaiky.medlembre.service;
 
 public class MedicamentoService {
     

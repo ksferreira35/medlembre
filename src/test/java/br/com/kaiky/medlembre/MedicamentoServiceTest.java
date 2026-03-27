@@ -1,4 +1,4 @@
-package br.com.kaiky;
+package br.com.kaiky.medlembre;
 
 public class MedicamentoServiceTest {
     
