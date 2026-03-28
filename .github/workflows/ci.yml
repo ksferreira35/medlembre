@@ -1,0 +1,39 @@
+name: CI - MedLembre
+
+on:
+  push:
+    branches: [ "main", "develop" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    name: Build, Lint e Testes
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout do repositório
+        uses: actions/checkout@v4
+
+      - name: Configurar Java 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Instalar dependências
+        run: mvn dependency:resolve --no-transfer-progress
+
+      - name: Executar Checkstyle (linting)
+        run: mvn checkstyle:check --no-transfer-progress
+
+      - name: Executar testes automatizados
+        run: mvn test --no-transfer-progress
+
+      - name: Relatório de testes
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: target/surefire-reports/
