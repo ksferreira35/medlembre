@@ -1,5 +1,6 @@
 # 💊 MedLembre
 
+![CI](https://github.com/ksferreira35/medlembre/actions/workflows/ci.yml/badge.svg)
 ![Version](https://img.shields.io/badge/version-1.0.0-blue)
 ![Java](https://img.shields.io/badge/Java-21-orange)
 ![License](https://img.shields.io/badge/license-MIT-green)
@@ -24,7 +25,7 @@ O **MedLembre** é uma aplicação CLI simples que permite cadastrar medicamento
 - Marcar medicamento como tomado no dia
 - Remover medicamento da lista
 - Persistência dos dados em arquivo JSON
-
+  
 ## Tecnologias Utilizadas
 
 - **Java 21**
@@ -32,6 +33,7 @@ O **MedLembre** é uma aplicação CLI simples que permite cadastrar medicamento
 - **Gson 2.10.1** — serialização/desserialização JSON
 - **JUnit 5** — testes automatizados
 - **Checkstyle** — análise estática de código
+- **Javadoc** — documentação gerada automaticamente
 - **GitHub Actions** — integração contínua (CI)
 
 ## Instalação
@@ -58,20 +60,20 @@ mvn dependency:resolve
 
 ```bash
 mvn package -DskipTests
-java -jar target/medlembre-1.0-SNAPSHOT-jar-with-dependencies.jar
+java -jar target/medlembre-1.0.0-jar-with-dependencies.jar
 ```
 
 Ou diretamente via Maven:
 
 ```bash
-mvn compile exec:java -Dexec.mainClass="com.medlembre.ui.MenuCLI"
+mvn compile exec:java -Dexec.mainClass="br.com.kaiky.medlembre.ui.MenuCLI"
 ```
 
 ### Exemplo de uso
 
 ```
 ╔══════════════════════════════════╗
-║   💊 MedLembre v1.0-SNAPSHOT     ║
+║       💊 MedLembre v1.0.0        ║
 ║      Controle de Medicamentos    ║
 ╚══════════════════════════════════╝
 
@@ -111,7 +113,7 @@ medlembre/
 │   └── workflows/
 │       └── ci.yml              # Pipeline GitHub Actions
 ├── src/
-│   ├── main/java/com/medlembre/
+│   ├── main/java/br/com/kaiky/medlembre/
 │   │   ├── model/
 │   │   │   └── Medicamento.java
 │   │   ├── service/
@@ -128,8 +130,7 @@ medlembre/
 
 ## Versão
 
-**v1.0-SNAPSHOT** — Versão em desenvolvimento. Inclui funcionalidades básicas de controle de medicamentos.
-
+**v1.0.0** — Versão inicial estável com funcionalidades básicas de controle de medicamentos.
 
 ## Autor
 

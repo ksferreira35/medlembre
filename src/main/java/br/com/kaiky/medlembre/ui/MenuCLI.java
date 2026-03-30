@@ -6,6 +6,9 @@ import java.util.Scanner;
 import br.com.kaiky.medlembre.model.Medicamento;
 import br.com.kaiky.medlembre.service.MedicamentoService;
 
+/**
+ * Interface de linha de comando do MedLembre.
+ */
 public class MenuCLI {
 
     private final MedicamentoService service;
@@ -18,8 +21,8 @@ public class MenuCLI {
 
     public void iniciar() {
         System.out.println("╔══════════════════════════════════╗");
-        System.out.println("║   💊 MedLembre v1.0-SNAPSHOT     ║");
-        System.out.println("║      Controle de Medicamentos    ║");
+        System.out.println("║     💊 MedLembre v1.0.0          ║");
+        System.out.println("║  Controle de Medicamentos        ║");
         System.out.println("╚══════════════════════════════════╝");
 
         boolean rodando = true;
@@ -41,6 +44,7 @@ public class MenuCLI {
         }
     }
 
+    /** Exibe as opções do menu principal. */
     private void exibirMenu() {
         System.out.println("\n--- MENU ---");
         System.out.println("1 - Cadastrar medicamento");
@@ -51,6 +55,10 @@ public class MenuCLI {
         System.out.print("Escolha: ");
     }
 
+    /**
+     * Solicita os dados e cadastra um novo medicamento.
+     * Aceita horário no formato H:mm ou HH:mm
+     */
     private void cadastrarMedicamento() {
         System.out.print("Nome do medicamento: ");
         String nome = scanner.nextLine();
@@ -67,6 +75,7 @@ public class MenuCLI {
         }
     }
 
+    /** Lista todos os medicamentos cadastrados com seus IDs. */
     private void listarMedicamentos() {
         List<Medicamento> lista = service.listar();
         if (lista.isEmpty()) {
@@ -79,10 +88,25 @@ public class MenuCLI {
         }
     }
 
+    /**
+     * Solicita o ID ou nome do medicamento e o marca como tomado hoje.
+     */
     private void marcarComoTomado() {
-        System.out.print("Nome do medicamento tomado: ");
-        String nome = scanner.nextLine();
-        boolean sucesso = service.marcarComoTomado(nome);
+        List<Medicamento> lista = service.listar();
+        if (lista.isEmpty()) {
+            System.out.println("Nenhum medicamento cadastrado.");
+            return;
+        }
+
+        System.out.println("\n--- MEDICAMENTOS ---");
+        for (Medicamento m : lista) {
+            System.out.println(m);
+        }
+
+        System.out.print("\nDigite o ID ou nome do medicamento tomado: ");
+        String entrada = scanner.nextLine();
+
+        boolean sucesso = service.marcarComoTomado(entrada);
         if (sucesso) {
             System.out.println("Marcado como tomado!");
         } else {
@@ -90,10 +114,33 @@ public class MenuCLI {
         }
     }
 
+    /**
+     * Lista os medicamentos, solicita o ID ou nome e pede confirmação antes de remover.
+     */
     private void removerMedicamento() {
-        System.out.print("Nome do medicamento a remover: ");
-        String nome = scanner.nextLine();
-        boolean removido = service.remover(nome);
+        List<Medicamento> lista = service.listar();
+        if (lista.isEmpty()) {
+            System.out.println("Nenhum medicamento cadastrado.");
+            return;
+        }
+
+        System.out.println("\n--- MEDICAMENTOS ---");
+        for (Medicamento m : lista) {
+            System.out.println(m);
+        }
+
+        System.out.print("\nDigite o ID ou nome do medicamento a remover: ");
+        String entrada = scanner.nextLine().trim();
+
+        System.out.print("Tem certeza que deseja remover \"" + entrada + "\"? (s/n): ");
+        String confirmacao = scanner.nextLine().trim().toLowerCase();
+
+        if (!confirmacao.equals("s")) {
+            System.out.println("Remoção cancelada.");
+            return;
+        }
+
+        boolean removido = service.remover(entrada);
         if (removido) {
             System.out.println("Medicamento removido.");
         } else {
@@ -101,6 +148,11 @@ public class MenuCLI {
         }
     }
 
+    /**
+     * Ponto de entrada da aplicação.
+     *
+     * @param args argumentos de linha de comando (não utilizados)
+     */
     public static void main(String[] args) {
         new MenuCLI().iniciar();
     }
