@@ -25,7 +25,7 @@ O **MedLembre** é uma aplicação CLI simples que permite cadastrar medicamento
 - Marcar medicamento como tomado no dia
 - Remover medicamento da lista
 - Persistência dos dados em arquivo JSON
-
+  
 ## Tecnologias Utilizadas
 
 - **Java 21**
@@ -33,6 +33,7 @@ O **MedLembre** é uma aplicação CLI simples que permite cadastrar medicamento
 - **Gson 2.10.1** — serialização/desserialização JSON
 - **JUnit 5** — testes automatizados
 - **Checkstyle** — análise estática de código
+- **Javadoc** — documentação da API gerada automaticamente
 - **GitHub Actions** — integração contínua (CI)
 
 ## Instalação
