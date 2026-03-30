@@ -5,7 +5,7 @@
 
   <groupId>br.com.kaiky</groupId>
   <artifactId>medlembre</artifactId>
-  <version>1.0-SNAPSHOT</version>
+  <version>1.0.0</version>
 
   <name>MedLembre</name>
     <description>Controle de medicamentos para idosos via CLI</description>
