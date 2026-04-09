@@ -38,26 +38,56 @@ public class Medicamento {
         contadorId = valor;
     }
 
+    /**
+     * Retorna o ID único do medicamento.
+     *
+     * @return identificador numérico do medicamento
+     */
     public int getId() {
         return id;
     }
 
+    /**
+     * Retorna o nome do medicamento.
+     *
+     * @return nome do medicamento
+     */
     public String getNome() {
         return nome;
     }
 
+    /**
+     * Retorna a dose prescrita do medicamento.
+     *
+     * @return dose do medicamento
+     */
     public String getDose() {
         return dose;
     }
 
+    /**
+     * Retorna o horário de ingestão do medicamento.
+     *
+     * @return horário no formato HH:mm
+     */
     public String getHorario() {
         return horario;
     }
 
+    /**
+     * Indica se o medicamento já foi tomado hoje.
+     *
+     * @return {@code true} se já foi tomado hoje, {@code false} caso contrário
+     */
     public boolean isTomadoHoje() {
         return tomadoHoje;
     }
 
+    /**
+     * Define se o medicamento foi tomado hoje.
+     *
+     * @param tomadoHoje {@code true} para marcar como tomado, {@code false} para desmarcar
+     */
     public void setTomadoHoje(boolean tomadoHoje) {
         this.tomadoHoje = tomadoHoje;
     }

@@ -25,7 +25,7 @@ O **MedLembre** é uma aplicação CLI simples que permite cadastrar medicamento
 - Marcar medicamento como tomado no dia
 - Remover medicamento da lista
 - Persistência dos dados em arquivo JSON
-  
+
 ## Tecnologias Utilizadas
 
 - **Java 21**
@@ -43,11 +43,37 @@ O **MedLembre** é uma aplicação CLI simples que permite cadastrar medicamento
 - Java 21
 - Maven 3.8+
 
-### Clonar o repositório
+### Opção 1 — Clonar o repositório
 
 ```bash
 git clone https://github.com/ksferreira35/medlembre.git
 cd medlembre
+```
+
+### Opção 2 — Download do arquivo ZIP
+
+**Via navegador:**
+
+Acesse diretamente o link abaixo para baixar a versão `v1.0.0`:
+
+```
+https://github.com/ksferreira35/medlembre/archive/refs/tags/v1.0.0.zip
+```
+
+**Via terminal (Linux/macOS com wget):**
+
+```bash
+wget https://github.com/ksferreira35/medlembre/archive/refs/tags/v1.0.0.zip
+unzip v1.0.0.zip
+cd medlembre-1.0.0
+```
+
+**Via terminal (Linux/macOS com curl):**
+
+```bash
+curl -L -o v1.0.0.zip https://github.com/ksferreira35/medlembre/archive/refs/tags/v1.0.0.zip
+unzip v1.0.0.zip
+cd medlembre-1.0.0
 ```
 
 ### Instalar dependências
@@ -105,6 +131,23 @@ Os relatórios são gerados em `target/surefire-reports/`.
 mvn checkstyle:check
 ```
 
+## Gerando a Documentação (Javadoc)
+
+```bash
+mvn javadoc:javadoc
+```
+
+A documentação será gerada na pasta `target/`. Para visualizá-la, abra o arquivo `index.html` no seu navegador. Ele estará em:
+
+```
+target/reports/apidocs/index.html
+```
+
+> **Nota:** O caminho exato pode variar conforme a configuração do `pom.xml`. Caso não encontre em `reports/apidocs/`, procure pelo `index.html` dentro de `target/site/apidocs/` ou pesquise recursivamente com:
+> ```bash
+> find target/ -name "index.html"
+> ```
+
 ## 📁 Estrutura do Projeto
 
 ```
@@ -134,7 +177,7 @@ medlembre/
 
 ## Autor
 
-**Kaiky Ferreira**  
+**Kaiky Ferreira**
 Bootcamp II
 
 ## Repositório

@@ -14,11 +14,19 @@ public class MenuCLI {
     private final MedicamentoService service;
     private final Scanner scanner;
 
+    /**
+     * Cria uma nova instância do menu CLI,
+     * inicializando o serviço de medicamentos e o leitor de entrada.
+     */
     public MenuCLI() {
         this.service = new MedicamentoService();
         this.scanner = new Scanner(System.in);
     }
 
+    /**
+     * Inicia menu principal da aplicação,
+     * exibindo o cabeçalho e processando as opções do menu até o usuário sair.
+     */
     public void iniciar() {
         System.out.println("╔══════════════════════════════════╗");
         System.out.println("║     💊 MedLembre v1.0.0          ║");
