@@ -27,7 +27,7 @@ Todas as mudanças notáveis neste projeto serão documentadas aqui.
 ### Melhorado
 - Comentários e Javadoc no código
 
-## [v1.1.0] - 2026-03-29
+## [v1.1.0] - 2026-05-14
 
 ### Adicionado
 - Integração com BrasilAPI para verificação de feriados nacionais
