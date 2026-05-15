@@ -32,4 +32,7 @@ Thumbs.db
  
 # Logs
 *.log
+
+# Github
+java-upgrade/
  

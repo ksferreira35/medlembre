@@ -1,9 +1,10 @@
 # 💊 MedLembre
 
 ![CI](https://github.com/ksferreira35/medlembre/actions/workflows/ci.yml/badge.svg)
-![Version](https://img.shields.io/badge/version-1.0.0-blue)
+![Version](https://img.shields.io/badge/version-1.1.0-blue)
 ![Java](https://img.shields.io/badge/Java-21-orange)
 ![License](https://img.shields.io/badge/license-MIT-green)
+![Docker](https://img.shields.io/badge/docker-ksferreira35%2Fmemldembre-blue?logo=docker)
 
 ## Descrição do Problema
 
@@ -11,20 +12,22 @@ Idosos frequentemente precisam tomar múltiplos medicamentos em horários difere
 
 ## Proposta da Solução
 
-O **MedLembre** é uma aplicação CLI simples que permite cadastrar medicamentos com nome, dose e horário, listar os remédios do dia, marcar quais já foram tomados e remover medicamentos quando necessário. Os dados são salvos localmente em arquivo JSON, garantindo persistência entre sessões.
+O **MedLembre** é uma aplicação CLI simples que permite cadastrar medicamentos com nome, dose e horário, listar os remédios do dia, marcar quais já foram tomados e remover medicamentos quando necessário. Os dados são salvos localmente em arquivo JSON, garantindo persistência entre sessões. A aplicação também consulta a BrasilAPI para avisar quando o dia atual for feriado nacional, ajudando no planejamento de estoque de medicamentos.
 
 ## Público-alvo
 
 - Idosos que gerenciam seus próprios medicamentos
 - Cuidadores e familiares responsáveis pela rotina de saúde de idosos
 
-## Suas Funcionalidades
+## Funcionalidades
 
 - Cadastrar medicamento (nome, dose, horário)
 - Listar todos os medicamentos cadastrados
-- Marcar medicamento como tomado no dia
-- Remover medicamento da lista
+- Marcar medicamento como tomado no dia (por ID ou nome)
+- Remover medicamento da lista (por ID ou nome)
 - Persistência dos dados em arquivo JSON
+- Aviso automático ao iniciar quando o dia for feriado nacional
+- Listagem de todos os feriados nacionais do ano
 
 ## Tecnologias Utilizadas
 
@@ -33,7 +36,9 @@ O **MedLembre** é uma aplicação CLI simples que permite cadastrar medicamento
 - **Gson 2.10.1** — serialização/desserialização JSON
 - **JUnit 5** — testes automatizados
 - **Checkstyle** — análise estática de código
-- **Javadoc** — documentação gerada automaticamente
+- **Javadoc** — documentação do código gerada automaticamente
+- **BrasilAPI** — API pública de feriados nacionais
+- **Docker** — containerização e deploy
 - **GitHub Actions** — integração contínua (CI)
 
 ## Instalação
@@ -54,26 +59,26 @@ cd medlembre
 
 **Via navegador:**
 
-Acesse diretamente o link abaixo para baixar a versão `v1.0.0`:
+Acesse diretamente o link abaixo para baixar a versão `v1.1.0`:
 
 ```
-https://github.com/ksferreira35/medlembre/archive/refs/tags/v1.0.0.zip
+https://github.com/ksferreira35/medlembre/archive/refs/tags/v1.1.0.zip
 ```
 
 **Via terminal (Linux/macOS com wget):**
 
 ```bash
-wget https://github.com/ksferreira35/medlembre/archive/refs/tags/v1.0.0.zip
-unzip v1.0.0.zip
-cd medlembre-1.0.0
+wget https://github.com/ksferreira35/medlembre/archive/refs/tags/v1.1.0.zip
+unzip v1.1.0.zip
+cd medlembre-1.1.0
 ```
 
 **Via terminal (Linux/macOS com curl):**
 
 ```bash
-curl -L -o v1.0.0.zip https://github.com/ksferreira35/medlembre/archive/refs/tags/v1.0.0.zip
-unzip v1.0.0.zip
-cd medlembre-1.0.0
+curl -L -o v1.1.0.zip https://github.com/ksferreira35/medlembre/archive/refs/tags/v1.1.0.zip
+unzip v1.1.0.zip
+cd medlembre-1.1.0
 ```
 
 ### Instalar dependências
@@ -86,7 +91,7 @@ mvn dependency:resolve
 
 ```bash
 mvn package -DskipTests
-java -jar target/medlembre-1.0.0-jar-with-dependencies.jar
+java -jar target/medlembre-1.1.0-jar-with-dependencies.jar
 ```
 
 Ou diretamente via Maven:
@@ -95,26 +100,46 @@ Ou diretamente via Maven:
 mvn compile exec:java -Dexec.mainClass="br.com.kaiky.medlembre.ui.MenuCLI"
 ```
 
+## Execução via Docker
+
+A imagem está disponível publicamente no Docker Hub:
+[https://hub.docker.com/r/ksferreira35/medlembre](https://hub.docker.com/r/ksferreira35/medlembre)
+
+```bash
+docker run -it ksferreira35/medlembre:latest
+```
+
 ### Exemplo de uso
 
 ```
 ╔══════════════════════════════════╗
-║       💊 MedLembre v1.0.0        ║
-║      Controle de Medicamentos    ║
+║     💊 MedLembre v1.1.0          ║
+║  Controle de Medicamentos        ║
 ╚══════════════════════════════════╝
+
+⚠️  Atenção: hoje é feriado (Tiradentes).
+    Verifique se seus medicamentos estão em estoque!
 
 --- MENU ---
 1 - Cadastrar medicamento
 2 - Listar medicamentos
 3 - Marcar como tomado hoje
 4 - Remover medicamento
+5 - Ver feriados nacionais do ano
 0 - Sair
-Escolha: 1
 
-Nome do medicamento: Losartana
-Dose (ex: 1 comprimido): 1 comprimido
-Horário (ex: 08:00): 08:00
-Medicamento cadastrado com sucesso!
+Escolha: 5
+
+--- FERIADOS NACIONAIS 2026 ---
+01/01 — Ano Novo
+20/04 — Tiradentes
+21/04 — Tiradentes
+01/05 — Dia do Trabalho
+07/09 — Independência do Brasil
+12/10 — Nossa Senhora Aparecida
+02/11 — Finados
+15/11 — Proclamação da República
+25/12 — Natal
 ```
 
 ## Rodando os Testes
@@ -137,16 +162,11 @@ mvn checkstyle:check
 mvn javadoc:javadoc
 ```
 
-A documentação será gerada na pasta `target/`. Para visualizá-la, abra o arquivo `index.html` no seu navegador. Ele estará em:
+A documentação será gerada dentro de `target/`. Para visualizá-la, abra o arquivo `index.html` no navegador:
 
+```bash
+find target/ -name "index.html"
 ```
-target/reports/apidocs/index.html
-```
-
-> **Nota:** O caminho exato pode variar conforme a configuração do `pom.xml`. Caso não encontre em `reports/apidocs/`, procure pelo `index.html` dentro de `target/site/apidocs/` ou pesquise recursivamente com:
-> ```bash
-> find target/ -name "index.html"
-> ```
 
 ## 📁 Estrutura do Projeto
 
@@ -154,26 +174,31 @@ target/reports/apidocs/index.html
 medlembre/
 ├── .github/
 │   └── workflows/
-│       └── ci.yml              # Pipeline GitHub Actions
+│       └── ci.yml
 ├── src/
 │   ├── main/java/br/com/kaiky/medlembre/
 │   │   ├── model/
 │   │   │   └── Medicamento.java
 │   │   ├── service/
+│   │   │   ├── FeriadoService.java
 │   │   │   └── MedicamentoService.java
 │   │   └── ui/
 │   │       └── MenuCLI.java
-│   └── test/java/com/medlembre/
+│   └── test/java/br/com/kaiky/medlembre/
 │       └── service/
+│           ├── FeriadoServiceIntegrationTest.java
 │           └── MedicamentoServiceTest.java
 ├── checkstyle.xml
+├── CHANGELOG.md
+├── Dockerfile
+├── LICENSE
 ├── pom.xml
 └── README.md
 ```
 
 ## Versão
 
-**v1.0.0** — Versão inicial estável com funcionalidades básicas de controle de medicamentos.
+**v1.1.0** — Integração com BrasilAPI para verificação de feriados nacionais.
 
 ## Autor
 
