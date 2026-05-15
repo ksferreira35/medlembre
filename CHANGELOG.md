@@ -26,3 +26,11 @@ Todas as mudanças notáveis neste projeto serão documentadas aqui.
 
 ### Melhorado
 - Comentários e Javadoc no código
+
+## [v1.1.0] - 2026-03-29
+
+### Adicionado
+- Integração com BrasilAPI para verificação de feriados nacionais
+- Aviso automático ao iniciar quando o dia for feriado
+- Opção 5 no menu para listar todos os feriados do ano
+- Testes de integração para FeriadoService

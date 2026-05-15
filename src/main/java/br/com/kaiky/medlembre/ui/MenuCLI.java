@@ -1,9 +1,12 @@
 package br.com.kaiky.medlembre.ui;
 
+import java.io.IOException;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Scanner;
 
 import br.com.kaiky.medlembre.model.Medicamento;
+import br.com.kaiky.medlembre.service.FeriadoService;
 import br.com.kaiky.medlembre.service.MedicamentoService;
 
 /**
@@ -12,6 +15,7 @@ import br.com.kaiky.medlembre.service.MedicamentoService;
 public class MenuCLI {
 
     private final MedicamentoService service;
+    private final FeriadoService feriadoService;
     private final Scanner scanner;
 
     /**
@@ -20,6 +24,7 @@ public class MenuCLI {
      */
     public MenuCLI() {
         this.service = new MedicamentoService();
+        this.feriadoService = new FeriadoService();
         this.scanner = new Scanner(System.in);
     }
 
@@ -29,9 +34,11 @@ public class MenuCLI {
      */
     public void iniciar() {
         System.out.println("╔══════════════════════════════════╗");
-        System.out.println("║     💊 MedLembre v1.0.0          ║");
+        System.out.println("║     💊 MedLembre v1.1.0          ║");
         System.out.println("║  Controle de Medicamentos        ║");
         System.out.println("╚══════════════════════════════════╝");
+
+        verificarFeriadoHoje();
 
         boolean rodando = true;
         while (rodando) {
@@ -43,12 +50,24 @@ public class MenuCLI {
                 case "2" -> listarMedicamentos();
                 case "3" -> marcarComoTomado();
                 case "4" -> removerMedicamento();
+                case "5" -> listarFeriadosDoAno();
                 case "0" -> {
                     System.out.println("\nAté logo! Cuide-se.");
                     rodando = false;
                 }
                 default -> System.out.println("Opção inválida. Tente novamente.");
             }
+        }
+    }
+
+    /**
+     * Verifica se hoje é feriado e exibe aviso ao usuário se for.
+     */
+    private void verificarFeriadoHoje() {
+        String feriado = feriadoService.verificarHoje();
+        if (feriado != null) {
+            System.out.println("\n⚠️  Atenção: hoje é feriado (" + feriado + ").");
+            System.out.println("    Verifique se seus medicamentos estão em estoque!");
         }
     }
 
@@ -59,13 +78,14 @@ public class MenuCLI {
         System.out.println("2 - Listar medicamentos");
         System.out.println("3 - Marcar como tomado hoje");
         System.out.println("4 - Remover medicamento");
+        System.out.println("5 - Ver feriados nacionais do ano");
         System.out.println("0 - Sair");
         System.out.print("Escolha: ");
     }
 
     /**
      * Solicita os dados e cadastra um novo medicamento.
-     * Aceita horário no formato H:mm ou HH:mm
+     * Aceita horário no formato H:mm ou HH:mm.
      */
     private void cadastrarMedicamento() {
         System.out.print("Nome do medicamento: ");
@@ -153,6 +173,29 @@ public class MenuCLI {
             System.out.println("Medicamento removido.");
         } else {
             System.out.println("Medicamento não encontrado.");
+        }
+    }
+
+    /**
+     * Busca e exibe todos os feriados nacionais do ano atual via BrasilAPI.
+     */
+    private void listarFeriadosDoAno() {
+        String ano = String.valueOf(LocalDate.now().getYear());
+        System.out.println("\n--- FERIADOS NACIONAIS " + ano + " ---");
+        try {
+            List<String> feriados = feriadoService.listarFeriadosDoAno(ano);
+            if (feriados.isEmpty()) {
+                System.out.println("Não foi possível obter os feriados.");
+                return;
+            }
+            for (String f : feriados) {
+                System.out.println(f);
+            }
+
+            Thread.sleep(5000);
+
+        } catch (IOException | InterruptedException e) {
+            System.out.println("Erro ao buscar feriados: verifique sua conexão.");
         }
     }
 
