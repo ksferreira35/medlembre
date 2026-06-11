@@ -1,5 +1,6 @@
 package br.com.kaiky.medlembre.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -12,6 +13,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import br.com.kaiky.medlembre.model.Medicamento;
+import br.com.kaiky.medlembre.repository.MedicamentoRepository;
 
 /**
  * Testes automatizados para MedicamentoService.
@@ -22,10 +24,7 @@ class MedicamentoServiceTest {
 
     @BeforeEach
     void setUp() {
-        service = new MedicamentoService();
-        for (Medicamento m : service.listar()) {
-            service.remover(m.getNome());
-        }
+        service = new MedicamentoService(new RepositorioEmMemoria());
     }
 
     @Test
@@ -206,5 +205,35 @@ class MedicamentoServiceTest {
         service.cadastrar("Remédio C", "1 cp", "20:00");
 
         assertEquals(3, service.quantidade());
+    }
+
+    private static class RepositorioEmMemoria implements MedicamentoRepository {
+
+        private final List<Medicamento> medicamentos = new ArrayList<>();
+
+        @Override
+        public List<Medicamento> carregar() {
+            return new ArrayList<>(medicamentos);
+        }
+
+        @Override
+        public Medicamento cadastrar(Medicamento medicamento) {
+            medicamentos.add(medicamento);
+            return medicamento;
+        }
+
+        @Override
+        public void removerPorId(int id) {
+            medicamentos.removeIf(m -> m.getId() == id);
+        }
+
+        @Override
+        public void marcarComoTomado(int id) {
+            for (Medicamento medicamento : medicamentos) {
+                if (medicamento.getId() == id) {
+                    medicamento.setTomadoHoje(true);
+                }
+            }
+        }
     }
 }

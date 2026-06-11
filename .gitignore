@@ -35,4 +35,6 @@ Thumbs.db
 
 # Github
 java-upgrade/
- 
+
+# Secrets Credentials
+.env

@@ -1,39 +1,43 @@
 package br.com.kaiky.medlembre.service;
 
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
-
+import br.com.kaiky.medlembre.config.AppConfig;
 import br.com.kaiky.medlembre.model.Medicamento;
+import br.com.kaiky.medlembre.repository.JsonMedicamentoRepository;
+import br.com.kaiky.medlembre.repository.MedicamentoRepository;
+import br.com.kaiky.medlembre.repository.SupabaseMedicamentoRepository;
 
 /**
  * Serviço responsável pelo gerenciamento de medicamentos.
- * Realiza operações de cadastro, remoção, listagem e mantem salvo em JSON.
+ * Realiza operações de cadastro, remoção, listagem e persistência.
  */
 public class MedicamentoService {
-
-    private static final String ARQUIVO = "medicamentos.json";
 
     /** Padrão de validação de horário no formato HH:mm. */
     private static final Pattern PADRAO_HORARIO = Pattern.compile("^([01]\\d|2[0-3]):[0-5]\\d$");
 
     private final List<Medicamento> medicamentos;
-    private final Gson gson;
+    private final MedicamentoRepository repository;
 
     /**
      * O serviço inicializa já tendo os medicamentos carregados no disco.
      */
     public MedicamentoService() {
-        this.gson = new GsonBuilder().setPrettyPrinting().create();
-        this.medicamentos = carregarDoDisco();
+        this(criarRepositoryPadrao());
+    }
+
+    /**
+     * Inicializa o serviço com um repositório específico.
+     *
+     * @param repository repositório de persistência
+     */
+    public MedicamentoService(MedicamentoRepository repository) {
+        this.repository = repository;
+        this.medicamentos = repository.carregar();
+        ajustarContadorId();
     }
 
     /**
@@ -63,8 +67,10 @@ public class MedicamentoService {
             throw new IllegalArgumentException("Horário inválido. Use o formato HH:mm (ex: 08:00).");
         }
 
-        medicamentos.add(new Medicamento(nome.trim(), dose.trim(), horarioNormalizado));
-        salvarNoDisco();
+        Medicamento medicamento = new Medicamento(nome.trim(), dose.trim(), horarioNormalizado);
+        Medicamento medicamentoPersistido = repository.cadastrar(medicamento);
+        medicamentos.add(medicamentoPersistido);
+        ajustarContadorId();
     }
 
     /**
@@ -75,21 +81,15 @@ public class MedicamentoService {
      */
     public boolean remover(String entrada) {
         String entradaNormalizada = entrada.trim();
-        boolean removido;
+        Medicamento medicamento = buscarPorEntrada(entradaNormalizada);
 
-        try {
-            int id = Integer.parseInt(entradaNormalizada);
-            removido = medicamentos.removeIf(m -> m.getId() == id);
-        } catch (NumberFormatException e) {
-            removido = medicamentos.removeIf(
-                m -> m.getNome().equalsIgnoreCase(entradaNormalizada)
-            );
+        if (medicamento == null) {
+            return false;
         }
 
-        if (removido) {
-            salvarNoDisco();
-        }
-        return removido;
+        repository.removerPorId(medicamento.getId());
+        medicamentos.removeIf(m -> m.getId() == medicamento.getId());
+        return true;
     }
 
     /**
@@ -99,11 +99,14 @@ public class MedicamentoService {
      * @return true se removido com sucesso, false se não encontrado
      */
     public boolean removerPorId(int id) {
-        boolean removido = medicamentos.removeIf(m -> m.getId() == id);
-        if (removido) {
-            salvarNoDisco();
+        Medicamento medicamento = buscarPorId(id);
+        if (medicamento == null) {
+            return false;
         }
-        return removido;
+
+        repository.removerPorId(id);
+        medicamentos.removeIf(m -> m.getId() == id);
+        return true;
     }
 
     /**
@@ -114,27 +117,15 @@ public class MedicamentoService {
      */
     public boolean marcarComoTomado(String entrada) {
         String entradaNormalizada = entrada.trim();
+        Medicamento medicamento = buscarPorEntrada(entradaNormalizada);
 
-        try {
-            int id = Integer.parseInt(entradaNormalizada);
-            for (Medicamento m : medicamentos) {
-                if (m.getId() == id) {
-                    m.setTomadoHoje(true);
-                    salvarNoDisco();
-                    return true;
-                }
-            }
-            return false;
-        } catch (NumberFormatException e) {
-            for (Medicamento m : medicamentos) {
-                if (m.getNome().equalsIgnoreCase(entradaNormalizada)) {
-                    m.setTomadoHoje(true);
-                    salvarNoDisco();
-                    return true;
-                }
-            }
+        if (medicamento == null) {
             return false;
         }
+
+        repository.marcarComoTomado(medicamento.getId());
+        medicamento.setTomadoHoje(true);
+        return true;
     }
 
     /**
@@ -183,32 +174,40 @@ public class MedicamentoService {
         return horario;
     }
 
-    /** A lista de medicamentos fica salvo no arquivo JSON. */
-    private void salvarNoDisco() {
-        try (FileWriter writer = new FileWriter(ARQUIVO)) {
-            gson.toJson(medicamentos, writer);
-        } catch (IOException e) {
-            System.err.println("Erro ao salvar dados: " + e.getMessage());
+    private void ajustarContadorId() {
+        int maiorId = medicamentos.stream().mapToInt(Medicamento::getId).max().orElse(0);
+        Medicamento.setContadorId(maiorId + 1);
+    }
+
+    private Medicamento buscarPorEntrada(String entrada) {
+        try {
+            return buscarPorId(Integer.parseInt(entrada));
+        } catch (NumberFormatException e) {
+            for (Medicamento medicamento : medicamentos) {
+                if (medicamento.getNome().equalsIgnoreCase(entrada)) {
+                    return medicamento;
+                }
+            }
+            return null;
         }
     }
 
-    /**
-     * Carrega os medicamentos do arquivo JSON e ajusta o contador de IDs.
-     *
-     * @return lista carregada ou lista vazia se o arquivo não existir
-     */
-    private List<Medicamento> carregarDoDisco() {
-        try (FileReader reader = new FileReader(ARQUIVO)) {
-            Type tipo = new TypeToken<List<Medicamento>>() {}.getType();
-            List<Medicamento> lista = gson.fromJson(reader, tipo);
-            if (lista != null && !lista.isEmpty()) {
-                int maiorId = lista.stream().mapToInt(Medicamento::getId).max().orElse(0);
-                Medicamento.setContadorId(maiorId + 1);
-                return lista;
+    private Medicamento buscarPorId(int id) {
+        for (Medicamento medicamento : medicamentos) {
+            if (medicamento.getId() == id) {
+                return medicamento;
             }
-            return new ArrayList<>();
-        } catch (IOException e) {
-            return new ArrayList<>();
         }
+        return null;
+    }
+
+    private static MedicamentoRepository criarRepositoryPadrao() {
+        if (AppConfig.supabaseHabilitado()) {
+            return new SupabaseMedicamentoRepository(
+                AppConfig.obrigatorio("SUPABASE_URL"),
+                AppConfig.obrigatorio("SUPABASE_ANON_KEY")
+            );
+        }
+        return new JsonMedicamentoRepository();
     }
 }

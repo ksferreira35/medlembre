@@ -30,6 +30,23 @@ public class Medicamento {
     }
 
     /**
+     * Cria um medicamento com dados já persistidos.
+     *
+     * @param id          identificador existente
+     * @param nome        nome do medicamento
+     * @param dose        dose a ser tomada
+     * @param horario     horário de ingestão no formato HH:mm
+     * @param tomadoHoje  indica se já foi tomado hoje
+     */
+    public Medicamento(int id, String nome, String dose, String horario, boolean tomadoHoje) {
+        this.id = id;
+        this.nome = nome;
+        this.dose = dose;
+        this.horario = horario;
+        this.tomadoHoje = tomadoHoje;
+    }
+
+    /**
      * Redefine o contador de IDs. Usado ao carregar dados do disco.
      *
      * @param valor novo valor do contador

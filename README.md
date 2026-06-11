@@ -1,7 +1,7 @@
 # 💊 MedLembre
 
 ![CI](https://github.com/ksferreira35/medlembre/actions/workflows/ci.yml/badge.svg)
-![Version](https://img.shields.io/badge/version-1.1.0-blue)
+![Version](https://img.shields.io/badge/version-1.2.0-blue)
 ![Java](https://img.shields.io/badge/Java-21-orange)
 ![License](https://img.shields.io/badge/license-MIT-green)
 ![Docker](https://img.shields.io/badge/docker-ksferreira35%2Fmemldembre-blue?logo=docker)
@@ -12,7 +12,9 @@ Idosos frequentemente precisam tomar múltiplos medicamentos em horários difere
 
 ## Proposta da Solução
 
-O **MedLembre** é uma aplicação CLI simples que permite cadastrar medicamentos com nome, dose e horário, listar os remédios do dia, marcar quais já foram tomados e remover medicamentos quando necessário. Os dados são salvos localmente em arquivo JSON, garantindo persistência entre sessões. A aplicação também consulta a BrasilAPI para avisar quando o dia atual for feriado nacional, ajudando no planejamento de estoque de medicamentos.
+O **MedLembre** é uma aplicação CLI simples que permite cadastrar medicamentos com nome, dose e horário, listar os remédios do dia, marcar quais já foram tomados e remover medicamentos quando necessário. Na entrega final, os dados são persistidos no **Supabase**, usando um banco PostgreSQL em nuvem. A aplicação também consulta a BrasilAPI para avisar quando o dia atual for feriado nacional, ajudando no planejamento de estoque de medicamentos.
+
+Para desenvolvimento offline, o projeto ainda possui um fallback local em arquivo JSON.
 
 ## Público-alvo
 
@@ -25,7 +27,8 @@ O **MedLembre** é uma aplicação CLI simples que permite cadastrar medicamento
 - Listar todos os medicamentos cadastrados
 - Marcar medicamento como tomado no dia (por ID ou nome)
 - Remover medicamento da lista (por ID ou nome)
-- Persistência dos dados em arquivo JSON
+- Persistência dos dados em banco PostgreSQL no Supabase
+- Fallback local em arquivo JSON para desenvolvimento offline
 - Aviso automático ao iniciar quando o dia for feriado nacional
 - Listagem de todos os feriados nacionais do ano
 
@@ -38,6 +41,7 @@ O **MedLembre** é uma aplicação CLI simples que permite cadastrar medicamento
 - **Checkstyle** — análise estática de código
 - **Javadoc** — documentação do código gerada automaticamente
 - **BrasilAPI** — API pública de feriados nacionais
+- **Supabase** — persistência remota via API REST
 - **Docker** — containerização e deploy
 - **GitHub Actions** — integração contínua (CI)
 
@@ -59,26 +63,26 @@ cd medlembre
 
 **Via navegador:**
 
-Acesse diretamente o link abaixo para baixar a versão `v1.1.0`:
+Acesse diretamente o link abaixo para baixar a versão `v1.2.0`:
 
 ```
-https://github.com/ksferreira35/medlembre/archive/refs/tags/v1.1.0.zip
+https://github.com/ksferreira35/medlembre/archive/refs/tags/v1.2.0.zip
 ```
 
 **Via terminal (Linux/macOS com wget):**
 
 ```bash
-wget https://github.com/ksferreira35/medlembre/archive/refs/tags/v1.1.0.zip
-unzip v1.1.0.zip
-cd medlembre-1.1.0
+wget https://github.com/ksferreira35/medlembre/archive/refs/tags/v1.2.0.zip
+unzip v1.2.0.zip
+cd medlembre-1.2.0
 ```
 
 **Via terminal (Linux/macOS com curl):**
 
 ```bash
-curl -L -o v1.1.0.zip https://github.com/ksferreira35/medlembre/archive/refs/tags/v1.1.0.zip
-unzip v1.1.0.zip
-cd medlembre-1.1.0
+curl -L -o v1.2.0.zip https://github.com/ksferreira35/medlembre/archive/refs/tags/v1.2.0.zip
+unzip v1.2.0.zip
+cd medlembre-1.2.0
 ```
 
 ### Instalar dependências
@@ -89,9 +93,11 @@ mvn dependency:resolve
 
 ## Execução
 
+Antes de executar a versão final, configure o Supabase conforme a seção abaixo.
+
 ```bash
 mvn package -DskipTests
-java -jar target/medlembre-1.1.0-jar-with-dependencies.jar
+java -jar target/medlembre-1.2.0-jar-with-dependencies.jar
 ```
 
 Ou diretamente via Maven:
@@ -99,6 +105,35 @@ Ou diretamente via Maven:
 ```bash
 mvn compile exec:java -Dexec.mainClass="br.com.kaiky.medlembre.ui.MenuCLI"
 ```
+
+## Configurando Supabase
+
+Para atender à entrega final, rode a aplicação com `MEDLEMBRE_STORAGE=supabase`.
+
+1. Crie um projeto no Supabase.
+2. No SQL Editor do Supabase, execute o script [`supabase/schema.sql`](supabase/schema.sql).
+   Se você já criou a tabela com uma versão anterior do script, recrie a tabela antes de rodar a versão final para garantir que o ID seja gerado automaticamente pelo banco.
+3. Copie o arquivo de exemplo:
+
+```bash
+cp .env.example .env
+```
+
+4. Preencha no `.env`:
+
+```env
+MEDLEMBRE_STORAGE=supabase
+SUPABASE_URL=https://seu-projeto.supabase.co
+SUPABASE_ANON_KEY=sua-chave-anon-public
+```
+
+5. Execute normalmente:
+
+```bash
+mvn compile exec:java -Dexec.mainClass="br.com.kaiky.medlembre.ui.MenuCLI"
+```
+
+Para voltar ao modo local, remova `MEDLEMBRE_STORAGE=supabase` ou altere para `local`.
 
 ## Execução via Docker
 
@@ -109,11 +144,21 @@ A imagem está disponível publicamente no Docker Hub:
 docker run -it ksferreira35/medlembre:latest
 ```
 
+Com Supabase:
+
+```bash
+docker run -it \
+  -e MEDLEMBRE_STORAGE=supabase \
+  -e SUPABASE_URL=https://seu-projeto.supabase.co \
+  -e SUPABASE_ANON_KEY=sua-chave-anon-public \
+  ksferreira35/medlembre:latest
+```
+
 ### Exemplo de uso
 
 ```
 ╔══════════════════════════════════╗
-║     💊 MedLembre v1.1.0          ║
+║     💊 MedLembre v1.2.0          ║
 ║  Controle de Medicamentos        ║
 ╚══════════════════════════════════╝
 
@@ -149,6 +194,8 @@ mvn test
 ```
 
 Os relatórios são gerados em `target/surefire-reports/`.
+
+O teste de integração real com Supabase só executa quando `MEDLEMBRE_STORAGE=supabase`, `SUPABASE_URL` e `SUPABASE_ANON_KEY` estão configurados. Sem essas variáveis, ele é ignorado para manter o CI funcionando sem expor credenciais.
 
 ## Rodando o Lint (Checkstyle)
 
@@ -198,12 +245,24 @@ medlembre/
 
 ## Versão
 
-**v1.1.0** — Integração com BrasilAPI para verificação de feriados nacionais.
+**v1.2.0** — Integração com Supabase para persistência em banco de dados na nuvem.
 
 ## Autor
 
 **Kaiky Ferreira**
 Bootcamp II
+
+## Integrantes
+
+- Kaiky Ferreira
+- Adicionar nome completo e matrícula dos demais integrantes
+
+## Entrega Final
+
+- Repositório: [https://github.com/ksferreira35/medlembre](https://github.com/ksferreira35/medlembre)
+- Deploy: [https://hub.docker.com/r/ksferreira35/medlembre](https://hub.docker.com/r/ksferreira35/medlembre)
+- Banco de dados: Supabase PostgreSQL
+- CI: GitHub Actions em `.github/workflows/ci.yml`
 
 ## Repositório
 

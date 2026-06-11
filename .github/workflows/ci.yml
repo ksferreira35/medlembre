@@ -30,6 +30,10 @@ jobs:
 
       - name: Executar testes automatizados
         run: mvn test --no-transfer-progress
+        env:
+          MEDLEMBRE_STORAGE: ${{ secrets.MEDLEMBRE_STORAGE }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
 
       - name: Relatório de testes
         if: always()

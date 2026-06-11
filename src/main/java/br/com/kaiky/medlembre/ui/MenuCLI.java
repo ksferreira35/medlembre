@@ -34,7 +34,7 @@ public class MenuCLI {
      */
     public void iniciar() {
         System.out.println("╔══════════════════════════════════╗");
-        System.out.println("║     💊 MedLembre v1.1.0          ║");
+        System.out.println("║     💊 MedLembre v1.2.0          ║");
         System.out.println("║  Controle de Medicamentos        ║");
         System.out.println("╚══════════════════════════════════╝");
 
@@ -45,17 +45,21 @@ public class MenuCLI {
             exibirMenu();
             String opcao = scanner.nextLine().trim();
 
-            switch (opcao) {
-                case "1" -> cadastrarMedicamento();
-                case "2" -> listarMedicamentos();
-                case "3" -> marcarComoTomado();
-                case "4" -> removerMedicamento();
-                case "5" -> listarFeriadosDoAno();
-                case "0" -> {
-                    System.out.println("\nAté logo! Cuide-se.");
-                    rodando = false;
+            try {
+                switch (opcao) {
+                    case "1" -> cadastrarMedicamento();
+                    case "2" -> listarMedicamentos();
+                    case "3" -> marcarComoTomado();
+                    case "4" -> removerMedicamento();
+                    case "5" -> listarFeriadosDoAno();
+                    case "0" -> {
+                        System.out.println("\nAté logo! Cuide-se.");
+                        rodando = false;
+                    }
+                    default -> System.out.println("Opção inválida. Tente novamente.");
                 }
-                default -> System.out.println("Opção inválida. Tente novamente.");
+            } catch (IllegalStateException e) {
+                System.out.println("Erro de persistência: " + e.getMessage());
             }
         }
     }
@@ -205,6 +209,10 @@ public class MenuCLI {
      * @param args argumentos de linha de comando (não utilizados)
      */
     public static void main(String[] args) {
-        new MenuCLI().iniciar();
+        try {
+            new MenuCLI().iniciar();
+        } catch (IllegalStateException e) {
+            System.out.println("Erro ao iniciar o MedLembre: " + e.getMessage());
+        }
     }
 }

@@ -34,3 +34,18 @@ Todas as mudanças notáveis neste projeto serão documentadas aqui.
 - Aviso automático ao iniciar quando o dia for feriado
 - Opção 5 no menu para listar todos os feriados do ano
 - Testes de integração para FeriadoService
+
+## [v1.2.0] - 2026-06-11
+
+### Adicionado
+- Integração com Supabase para persistência em banco PostgreSQL na nuvem
+- Repositórios de persistência para alternar entre Supabase e JSON local
+- Leitura de configuração via variáveis de ambiente e arquivo `.env`
+- Script SQL para criação da tabela `medicamentos` e policies de acesso
+- Teste de integração opcional para validar CRUD real no Supabase
+- Checklist da entrega final
+
+### Alterado
+- Persistência final do projeto passa a usar Supabase
+- IDs dos medicamentos passam a ser gerados pelo banco no modo Supabase
+- Testes de `MedicamentoService` passam a usar repositório em memória

@@ -7,5 +7,5 @@ RUN mvn package -DskipTests --no-transfer-progress
 
 FROM eclipse-temurin:21-jre
 WORKDIR /app
-COPY --from=build /app/target/medlembre-1.1.0-jar-with-dependencies.jar app.jar
+COPY --from=build /app/target/medlembre-1.2.0-jar-with-dependencies.jar app.jar
 ENTRYPOINT ["java", "-jar", "app.jar"]
