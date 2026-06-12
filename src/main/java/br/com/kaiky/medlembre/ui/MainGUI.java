@@ -569,9 +569,17 @@ public class MainGUI extends JFrame {
         lblConcluidos.setText("● Concluídos: " + concluidos);
         lblPagina.setText("Página 1 de 1");
 
-        lblSubtitulo.setText(pendentes == 0
-            ? "Nenhum medicamento pendente para hoje."
-            : "Você possui " + pendentes + " medicamento" + (pendentes == 1 ? "" : "s") + " agendado" + (pendentes == 1 ? "" : "s") + " para hoje.");
+        lblSubtitulo.setText(
+    pendentes == 0
+        ? "Nenhum medicamento pendente para hoje."
+        : "Você possui "
+            + pendentes
+            + " medicamento"
+            + (pendentes == 1 ? "" : "s")
+            + " agendado"
+            + (pendentes == 1 ? "" : "s")
+            + " para hoje."
+  );
     }
 
     private void cadastrarMedicamento() {
@@ -699,7 +707,11 @@ public class MainGUI extends JFrame {
                 try {
                     String f = get();
                     if (f != null) {
-                        lblFeriado.setText("Hoje é feriado: " + f + " — Verifique se seus medicamentos estão em estoque!");
+                        lblFeriado.setText(
+                              "Hoje é feriado: "
+                                  + f
+                                  + " — Verifique se seus medicamentos estão em estoque!"
+                          );
                         painelFeriado.setVisible(true);
                         revalidate();
                     }
@@ -711,9 +723,18 @@ public class MainGUI extends JFrame {
 
     // ── Feedback ──────────────────────────────────────────────────────────────
 
-    private void exibirSucesso(String msg) { exibirStatus("✔  " + msg, COR_SUCESSO); }
-    private void exibirErro(String msg)    { exibirStatus("✕  " + msg, COR_PERIGO); Toolkit.getDefaultToolkit().beep(); }
-    private void exibirAviso(String msg)   { exibirStatus("⚠  " + msg, COR_AVISO); }
+        private void exibirSucesso(String msg) {
+        exibirStatus("✔  " + msg, COR_SUCESSO);
+    }
+
+    private void exibirErro(String msg) {
+        exibirStatus("✕  " + msg, COR_PERIGO);
+        Toolkit.getDefaultToolkit().beep();
+    }
+
+    private void exibirAviso(String msg) {
+        exibirStatus("⚠  " + msg, COR_AVISO);
+    }
 
     private void exibirStatus(String msg, Color cor) {
         lblStatus.setText(msg);
