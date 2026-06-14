@@ -49,3 +49,18 @@ Todas as mudanças notáveis neste projeto serão documentadas aqui.
 - Persistência final do projeto passa a usar Supabase
 - IDs dos medicamentos passam a ser gerados pelo banco no modo Supabase
 - Testes de `MedicamentoService` passam a usar repositório em memória
+
+## [v1.2.1] - 2026-06-13
+
+### Adicionado
+- Documentação de execução separada para interface gráfica (GUI) e menu de terminal (CLI)
+- Indicação dos JARs gerados para cada modo de execução
+
+### Alterado
+- README atualizado para descrever o projeto como aplicação com GUI e CLI
+- Estrutura do projeto no README atualizada com os pacotes atuais
+- Build ajustado para gerar JARs versionados de CLI e GUI
+- Dockerfile ajustado com alvo para CLI e alvo para GUI
+- Imagem Docker da GUI ajustada com bibliotecas nativas necessárias para Swing/AWT
+- README atualizado com instruções de execução Docker para CLI, GUI no Linux e Supabase
+- Link de deploy atualizado com tags publicadas no Docker Hub

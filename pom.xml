@@ -5,7 +5,7 @@
 
   <groupId>br.com.kaiky</groupId>
   <artifactId>medlembre</artifactId>
-  <version>1.2.0</version>
+  <version>1.2.1</version>
 
   <name>MedLembre</name>
     <description>Controle de medicamentos para idosos via CLI e GUI</description>
@@ -72,7 +72,7 @@
                             <goal>single</goal>
                         </goals>
                         <configuration>
-                            <finalName>medlembre-cli</finalName>
+                            <finalName>medlembre-cli-${project.version}</finalName>
                             <archive>
                                 <manifest>
                                     <mainClass>br.com.kaiky.medlembre.ui.MenuCLI</mainClass>
@@ -91,7 +91,7 @@
                             <goal>single</goal>
                         </goals>
                         <configuration>
-                            <finalName>medlembre-gui</finalName>
+                            <finalName>medlembre-gui-${project.version}</finalName>
                             <archive>
                                 <manifest>
                                     <mainClass>br.com.kaiky.medlembre.ui.MainGUI</mainClass>
