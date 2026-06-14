@@ -1,10 +1,10 @@
 # 💊 MedLembre
 
 ![CI](https://github.com/ksferreira35/medlembre/actions/workflows/ci.yml/badge.svg)
-![Version](https://img.shields.io/badge/version-1.2.0-blue)
+![Version](https://img.shields.io/badge/version-1.2.1-blue)
 ![Java](https://img.shields.io/badge/Java-21-orange)
 ![License](https://img.shields.io/badge/license-MIT-green)
-![Docker](https://img.shields.io/badge/docker-ksferreira35%2Fmemldembre-blue?logo=docker)
+![Docker](https://img.shields.io/badge/docker-ksferreira35%2Fmedlembre-blue?logo=docker)
 
 ## Descrição do Problema
 
@@ -12,7 +12,7 @@ Idosos frequentemente precisam tomar múltiplos medicamentos em horários difere
 
 ## Proposta da Solução
 
-O **MedLembre** é uma aplicação CLI simples que permite cadastrar medicamentos com nome, dose e horário, listar os remédios do dia, marcar quais já foram tomados e remover medicamentos quando necessário. Na entrega final, os dados são persistidos no **Supabase**, usando um banco PostgreSQL em nuvem. A aplicação também consulta a BrasilAPI para avisar quando o dia atual for feriado nacional, ajudando no planejamento de estoque de medicamentos.
+O **MedLembre** é uma aplicação Java com duas formas de uso: interface gráfica (GUI) e menu de terminal (CLI). Em ambas, é possível cadastrar medicamentos com nome, dose e horário, listar os remédios do dia, marcar quais já foram tomados e remover medicamentos quando necessário. Na entrega final, os dados são persistidos no **Supabase**, usando um banco PostgreSQL em nuvem. A aplicação também consulta a BrasilAPI para avisar quando o dia atual for feriado nacional, ajudando no planejamento de estoque de medicamentos.
 
 Para desenvolvimento offline, o projeto ainda possui um fallback local em arquivo JSON.
 
@@ -27,6 +27,8 @@ Para desenvolvimento offline, o projeto ainda possui um fallback local em arquiv
 - Listar todos os medicamentos cadastrados
 - Marcar medicamento como tomado no dia (por ID ou nome)
 - Remover medicamento da lista (por ID ou nome)
+- Execução por interface gráfica (GUI)
+- Execução por menu de terminal (CLI)
 - Persistência dos dados em banco PostgreSQL no Supabase
 - Fallback local em arquivo JSON para desenvolvimento offline
 - Aviso automático ao iniciar quando o dia for feriado nacional
@@ -63,26 +65,26 @@ cd medlembre
 
 **Via navegador:**
 
-Acesse diretamente o link abaixo para baixar a versão `v1.2.0`:
+Acesse diretamente o link abaixo para baixar a versão `v1.2.1`:
 
 ```
-https://github.com/ksferreira35/medlembre/archive/refs/tags/v1.2.0.zip
+https://github.com/ksferreira35/medlembre/archive/refs/tags/v1.2.1.zip
 ```
 
 **Via terminal (Linux/macOS com wget):**
 
 ```bash
-wget https://github.com/ksferreira35/medlembre/archive/refs/tags/v1.2.0.zip
-unzip v1.2.0.zip
-cd medlembre-1.2.0
+wget https://github.com/ksferreira35/medlembre/archive/refs/tags/v1.2.1.zip
+unzip v1.2.1.zip
+cd medlembre-1.2.1
 ```
 
 **Via terminal (Linux/macOS com curl):**
 
 ```bash
-curl -L -o v1.2.0.zip https://github.com/ksferreira35/medlembre/archive/refs/tags/v1.2.0.zip
-unzip v1.2.0.zip
-cd medlembre-1.2.0
+curl -L -o v1.2.1.zip https://github.com/ksferreira35/medlembre/archive/refs/tags/v1.2.1.zip
+unzip v1.2.1.zip
+cd medlembre-1.2.1
 ```
 
 ### Instalar dependências
@@ -95,16 +97,44 @@ mvn dependency:resolve
 
 Antes de executar a versão final, configure o Supabase conforme a seção abaixo.
 
+Você pode escolher entre a interface gráfica ou o menu de terminal.
+
+### Interface gráfica (GUI)
+
+Para abrir a aplicação com janelas:
+
 ```bash
-mvn package -DskipTests
-java -jar target/medlembre-1.2.0-jar-with-dependencies.jar
+mvn compile exec:java -Dexec.mainClass="br.com.kaiky.medlembre.ui.MainGUI"
 ```
 
-Ou diretamente via Maven:
+Depois de gerar os JARs:
+
+```bash
+mvn package -DskipTests
+java -jar target/medlembre-gui-1.2.1-jar-with-dependencies.jar
+```
+
+### Menu de terminal (CLI)
+
+Para usar a aplicação pelo terminal:
 
 ```bash
 mvn compile exec:java -Dexec.mainClass="br.com.kaiky.medlembre.ui.MenuCLI"
 ```
+
+Depois de gerar os JARs:
+
+```bash
+mvn package -DskipTests
+java -jar target/medlembre-cli-1.2.1-jar-with-dependencies.jar
+```
+
+### JARs gerados
+
+O comando `mvn package -DskipTests` gera dois arquivos executáveis:
+
+- `target/medlembre-gui-1.2.1-jar-with-dependencies.jar`
+- `target/medlembre-cli-1.2.1-jar-with-dependencies.jar`
 
 ## Configurando Supabase
 
@@ -130,6 +160,12 @@ SUPABASE_ANON_KEY=sua-chave-anon-public
 5. Execute normalmente:
 
 ```bash
+mvn compile exec:java -Dexec.mainClass="br.com.kaiky.medlembre.ui.MainGUI"
+```
+
+Ou, se preferir o terminal:
+
+```bash
 mvn compile exec:java -Dexec.mainClass="br.com.kaiky.medlembre.ui.MenuCLI"
 ```
 
@@ -140,25 +176,93 @@ Para voltar ao modo local, remova `MEDLEMBRE_STORAGE=supabase` ou altere para `l
 A imagem está disponível publicamente no Docker Hub:
 [https://hub.docker.com/r/ksferreira35/medlembre](https://hub.docker.com/r/ksferreira35/medlembre)
 
+Tags publicadas:
+
+- `ksferreira35/medlembre:1.2.1` — CLI
+- `ksferreira35/medlembre:latest` — CLI
+- `ksferreira35/medlembre:1.2.1-cli` — CLI
+- `ksferreira35/medlembre:1.2.1-gui` — GUI
+
+### Docker com CLI
+
+A imagem padrão executa o menu de terminal e funciona em qualquer ambiente com Docker:
+
+```bash
+docker run -it ksferreira35/medlembre:1.2.1
+```
+
+Também é possível usar:
+
 ```bash
 docker run -it ksferreira35/medlembre:latest
 ```
 
-Com Supabase:
+Para buildar localmente:
+
+```bash
+docker build --target cli -t medlembre:cli .
+docker run -it medlembre:cli
+```
+
+### Docker com GUI (Linux)
+
+A imagem GUI precisa acessar o servidor gráfico do computador. Por isso, no Linux, execute com `DISPLAY` e o socket do X11:
+
+```bash
+xhost +local:docker
+docker run -it \
+  -e DISPLAY=$DISPLAY \
+  -v /tmp/.X11-unix:/tmp/.X11-unix \
+  ksferreira35/medlembre:1.2.1-gui
+```
+
+Para buildar localmente:
+
+```bash
+docker build --target gui -t medlembre:gui .
+xhost +local:docker
+docker run -it \
+  -e DISPLAY=$DISPLAY \
+  -v /tmp/.X11-unix:/tmp/.X11-unix \
+  medlembre:gui
+```
+
+No Windows e macOS, a GUI via Docker depende de configuração extra de servidor gráfico, como VcXsrv ou XQuartz. Para esses ambientes, recomenda-se rodar a interface gráfica diretamente com Maven:
+
+```bash
+mvn compile exec:java -Dexec.mainClass="br.com.kaiky.medlembre.ui.MainGUI"
+```
+
+### Docker com Supabase
+
+CLI com Supabase:
 
 ```bash
 docker run -it \
   -e MEDLEMBRE_STORAGE=supabase \
   -e SUPABASE_URL=https://seu-projeto.supabase.co \
   -e SUPABASE_ANON_KEY=sua-chave-anon-public \
-  ksferreira35/medlembre:latest
+  ksferreira35/medlembre:1.2.1
+```
+
+GUI com Supabase no Linux:
+
+```bash
+xhost +local:docker
+docker run -it \
+  -e DISPLAY=$DISPLAY \
+  -v /tmp/.X11-unix:/tmp/.X11-unix \
+  -e MEDLEMBRE_STORAGE=supabase \
+  -e SUPABASE_URL=https://seu-projeto.supabase.co \
+  -e SUPABASE_ANON_KEY=sua-chave-anon-public \
+  ksferreira35/medlembre:1.2.1-gui
 ```
 
 ### Exemplo de uso
 
 ```
 ╔══════════════════════════════════╗
-║     💊 MedLembre v1.2.0          ║
+║     💊 MedLembre v1.2.1          ║
 ║  Controle de Medicamentos        ║
 ╚══════════════════════════════════╝
 
@@ -224,17 +328,28 @@ medlembre/
 │       └── ci.yml
 ├── src/
 │   ├── main/java/br/com/kaiky/medlembre/
+│   │   ├── config/
+│   │   │   └── AppConfig.java
 │   │   ├── model/
 │   │   │   └── Medicamento.java
+│   │   ├── repository/
+│   │   │   ├── JsonMedicamentoRepository.java
+│   │   │   ├── MedicamentoRepository.java
+│   │   │   └── SupabaseMedicamentoRepository.java
 │   │   ├── service/
 │   │   │   ├── FeriadoService.java
 │   │   │   └── MedicamentoService.java
 │   │   └── ui/
+│   │       ├── MainGUI.java
 │   │       └── MenuCLI.java
 │   └── test/java/br/com/kaiky/medlembre/
+│       ├── repository/
+│       │   └── SupabaseMedicamentoRepositoryIntegrationTest.java
 │       └── service/
 │           ├── FeriadoServiceIntegrationTest.java
 │           └── MedicamentoServiceTest.java
+├── supabase/
+│   └── schema.sql
 ├── checkstyle.xml
 ├── CHANGELOG.md
 ├── Dockerfile
@@ -245,7 +360,7 @@ medlembre/
 
 ## Versão
 
-**v1.2.0** — Integração com Supabase para persistência em banco de dados na nuvem.
+**v1.2.1** — Execução documentada para interface gráfica (GUI) e menu de terminal (CLI).
 
 ## Autor
 
@@ -260,7 +375,9 @@ Bootcamp II
 ## Entrega Final
 
 - Repositório: [https://github.com/ksferreira35/medlembre](https://github.com/ksferreira35/medlembre)
-- Deploy: [https://hub.docker.com/r/ksferreira35/medlembre](https://hub.docker.com/r/ksferreira35/medlembre)
+- Deploy Docker Hub: [https://hub.docker.com/r/ksferreira35/medlembre](https://hub.docker.com/r/ksferreira35/medlembre)
+- Imagem CLI: `docker run -it ksferreira35/medlembre:1.2.1`
+- Imagem GUI Linux: `ksferreira35/medlembre:1.2.1-gui`
 - Banco de dados: Supabase PostgreSQL
 - CI: GitHub Actions em `.github/workflows/ci.yml`
 
