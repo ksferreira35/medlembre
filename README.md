@@ -369,8 +369,8 @@ Bootcamp II
 
 ## Integrantes
 
-- Kaiky Ferreira
-- Adicionar nome completo e matrícula dos demais integrantes
+- Kaiky Ferreira - 22503268
+- Mateus Alarcão Alves - 22503278 (Responsável pelo GUI)
 
 ## Entrega Final
 
